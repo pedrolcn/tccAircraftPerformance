@@ -55,6 +55,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
             <Col xs="3">
               <Inputs 
                 changeHandler={this.handleChange}
+                config={this.state.config}
               />
             </Col>
             <Col xs="9">
