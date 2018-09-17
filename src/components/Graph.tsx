@@ -17,7 +17,7 @@ const plot: React.StatelessComponent<PlotProps> = ({ airspeed, data }) => {
         name: (idx + 1).toString(),
       } as Partial<Plotly.Data>
       ))}
-      layout={{ autosize: true, title: 'A Fancy Plot' }}
+      layout={{ autosize: true, title: 'Sink Rate vs Airspeed' }}
       style={{ width: '100%', height: '100%' }}
       useResizeHandler
       config={{

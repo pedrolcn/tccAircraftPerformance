@@ -4,6 +4,7 @@ import { Inputs, Plot } from '../components';
 import AtmosIsa from '../util/atmosphere';
 
 export interface PerformanceViewProps {}
+
 export interface PerformanceViewState {
   airspeed: number[];
   config: any[];
