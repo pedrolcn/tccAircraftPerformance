@@ -9,6 +9,7 @@ export interface PerformanceViewState {
   airspeed: number[];
   config: any[];
   activeTab: number;
+  h: number;
 }
 
 export interface AircraftConfiguration {
@@ -30,6 +31,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
         S: 0, // 153,
         W: 0, // 588600,
       }],
+      h: 0,
       activeTab: 0,
     };
 
@@ -41,9 +43,14 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
   handleChange (idx: number) {
     return (event: React.FormEvent<HTMLInputElement>) => {
       const { config } = this.state;
-      config[idx][event.currentTarget.name] = event.currentTarget.value;
+      const { name } = event.currentTarget;
 
-      this.setState({ config });
+      if (name === 'h') {
+        this.setState({ h: parseInt(event.currentTarget.value, 10) });
+      } else {
+        config[idx][name] = event.currentTarget.value;
+        this.setState({ config });
+      }
     };
   }
 
@@ -59,8 +66,8 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
     this.setState(prevState => ({ config, activeTab: prevState.activeTab + 1 }));
   }
 
-  calculateSinkRate(h: number) {
-    const rho = AtmosIsa.density(h);
+  calculateSinkRate() {
+    const rho = AtmosIsa.density(this.state.h);
     
     return this.state.config.map((config) => {
       const { dragK, dragCD0, S, W } = config;  
@@ -98,6 +105,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
             index={idx}
             changeHandler={this.handleChange(idx)}
             config={config}
+            h={this.state.h}
           />
         </TabPane>
       );
@@ -125,7 +133,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
             <Col xs="9">
               <Plot
                 airspeed={airspeed}
-                data={this.calculateSinkRate(0)}
+                data={this.calculateSinkRate()}
               />
             </Col>
           </Row>

@@ -5,15 +5,16 @@ import { AircraftConfiguration } from '../views/PerformanceView';
 export interface InputProps {
   index?: number;
   config: AircraftConfiguration;
+  h: number;
   changeHandler: (event: React.FormEvent<HTMLInputElement>) => void;
 }
 
 const input: React.StatelessComponent<InputProps> = (props) => {
-  const { index = 0, changeHandler, config } = props;
+  const { index = 0, changeHandler, config, h } = props;
   return (
     <React.Fragment>
       <FormGroup inline>
-        <Label for="wingArea">S</Label>
+        <Label for="wingArea">S[m²]</Label>
         <Input type="number" name="S" id="wingArea" value={config.S} onChange={changeHandler}/>
       </FormGroup>
       <FormGroup inline>
@@ -25,12 +26,12 @@ const input: React.StatelessComponent<InputProps> = (props) => {
         <Input type="number" name="dragK" id="dragK" value={config.dragK} onChange={changeHandler}/>
       </FormGroup>
       <FormGroup inline>
-        <Label for="weigth">W</Label>
+        <Label for="weigth">W[N]</Label>
         <Input type="number" name="W" id="weigth" value={config.W} onChange={changeHandler}/>
       </FormGroup>
       <FormGroup inline>
-        <Label for="altitude">h</Label>
-        <Input type="number" name="h" id="altitude" defaultValue="0" onChange={changeHandler}/>
+        <Label for="altitude">h[m]</Label>
+        <Input type="number" name="h" id="altitude" value={h} onChange={changeHandler}/>
       </FormGroup>
     </React.Fragment>
   );
