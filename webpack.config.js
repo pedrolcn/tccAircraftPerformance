@@ -1,7 +1,8 @@
 const path = require('path');
 const Package = require('pjson');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   context: path.join(__dirname, 'src'),
@@ -59,10 +60,6 @@ module.exports = {
   },
 
   plugins: [
-
-    /* Exclude unused moment.js locales  */
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en|pt|es/),
-
     /* Window provide plugin */
     new webpack.ProvidePlugin({
       $: 'jquery',
@@ -86,6 +83,9 @@ module.exports = {
       favicon: path.resolve(__dirname, './src/assets/favicon.ico',),
       template: path.resolve(__dirname, './src/index.html'),
     }),
+
+    /* Minifies javascript */
+    new UglifyJsPlugin(),
 
     /* Hot module replacement plugin */
     new webpack.HotModuleReplacementPlugin(),

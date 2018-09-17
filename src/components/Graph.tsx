@@ -1,5 +1,9 @@
 import * as React from 'react';
-import Plot from 'react-plotly.js';
+
+// Create React component from custom bundle to reduce size
+const CreatePlotlyComponent = require('react-plotly.js/factory');
+const Plotly = require('plotly.js-basic-dist');
+const Plot = CreatePlotlyComponent(Plotly);
 
 export interface PlotProps {
   airspeed: number[];
@@ -21,7 +25,7 @@ const plot: React.StatelessComponent<PlotProps> = ({ airspeed, data }) => {
       style={{ width: '100%', height: '100%' }}
       useResizeHandler
       config={{
-        modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'hoverCompareCartesian', 'toggleSpikelines', 'zoom2d'],
+        modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'hoverCompareCartesian', 'toggleSpikelines'],
       }}
     />;
 };
