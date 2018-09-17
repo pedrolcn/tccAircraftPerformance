@@ -4,7 +4,9 @@
   "rules": {
     "ordered-imports": false,
     "max-line-length": [true, 120],
-    "variable-name": false
+    "variable-name": false,
+    "import-name": false,
+    "no-trailing-whitespace": false
   },
   "rulesDirectory": []
 }

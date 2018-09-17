@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { render } from 'react-dom';
 
 import App from 'app/App';
 
@@ -23,7 +23,7 @@ export class MainClient {
    */
   public static init(elementId?: string): MainClient {
     const client = new MainClient(elementId);
-    ReactDOM.render(client.render(), client.root);
+    render(client.render(), client.root);
     return client;
   }
 
