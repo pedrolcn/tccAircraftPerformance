@@ -4,6 +4,43 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
+// Shared plugins
+const plugins = [
+  /* Window provide plugin */
+  new webpack.ProvidePlugin({
+    $: 'jquery',
+    jQuery: 'jquery',
+    'window.jQuery': 'jquery'
+  }),
+
+  /* Defines all env variables needed by MainConfig */
+  new webpack.DefinePlugin({
+    'process.env': {
+      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      API_BASE_URL: JSON.stringify(process.env.API_BASE_URL),
+      PACKAGE_VERSION: JSON.stringify(Package.version),
+    },
+  }),
+
+  /* Generates the root index based on template */
+  new HtmlWebpackPlugin({
+    title: Package.name,
+    version: Package.version,
+    favicon: path.resolve(__dirname, './src/assets/favicon.ico',),
+    template: path.resolve(__dirname, './src/index.html'),
+  }),
+
+  /* Minifies javascript */
+
+  // new UglifyJsPlugin(), 
+
+  /* Hot module replacement plugin */
+  new webpack.HotModuleReplacementPlugin(),
+
+  // Activate to debug bundle size
+  // new BundleAnalyzerPlugin()
+];
+
 module.exports = {
   context: path.join(__dirname, 'src'),
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
@@ -59,40 +96,13 @@ module.exports = {
     hot: true
   },
 
-  plugins: [
-    /* Window provide plugin */
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-      'window.jQuery': 'jquery'
-    }),
-
-    /* Defines all env variables needed by MainConfig */
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-        API_BASE_URL: JSON.stringify(process.env.API_BASE_URL),
-        PACKAGE_VERSION: JSON.stringify(Package.version),
-      },
-    }),
-
-    /* Generates the root index based on template */
-    new HtmlWebpackPlugin({
-      title: Package.name,
-      version: Package.version,
-      favicon: path.resolve(__dirname, './src/assets/favicon.ico',),
-      template: path.resolve(__dirname, './src/index.html'),
-    }),
-
-    /* Minifies javascript */
-    new UglifyJsPlugin(),
-
-    /* Hot module replacement plugin */
-    new webpack.HotModuleReplacementPlugin(),
-
-    // Activate to debug bundle size
-    // new BundleAnalyzerPlugin()
-  ],
+  plugins: process.env.NODE_ENV === 'production'
+    ? [
+      ...plugins,
+      /* Production-only plugins */
+      new UglifyJsPlugin(), 
+    ]
+    : plugins,
 
   module: {
     rules: [
