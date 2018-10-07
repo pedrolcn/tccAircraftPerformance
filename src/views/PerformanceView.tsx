@@ -44,36 +44,56 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
     this.handleGeneralInputs = this.handleGeneralInputs.bind(this);
     this.toggleActiveTab = this.toggleActiveTab.bind(this);
     this.addNewTab = this.addNewTab.bind(this);
+    this.deleteTab = this.deleteTab.bind(this);
   }
 
   handleInputs (idx: number) {
     return (event: React.FormEvent<HTMLInputElement>) => {
-      const { config } = this.state;
-      const { name } = event.currentTarget;
+      const { name, value } = event.currentTarget;
 
       if (name === 'h') {
         this.setState({ h: parseInt(event.currentTarget.value, 10) });
+        
       } else {
-        config[idx][name] = event.currentTarget.value;
-        this.setState({ config });
+        this.setState((prevState) => {
+          debugger;
+          const { config } = prevState;
+          config[idx][name] = value;
+
+          return { config };
+        });
       }
     };
   }
 
   handleGeneralInputs (event: React.FormEvent<HTMLInputElement>) {
-    const { name } = event.currentTarget;
-    const nextState = Object.assign(this.state, { [name]: parseInt(event.currentTarget.value, 10) });
-
-    this.setState(nextState);
+    const { name, value } = event.currentTarget;
+    this.setState(prevState => Object.assign(prevState, { [name]: parseInt(value, 10) }));
   }
 
   addNewTab() {
-    const { config , activeTab } = this.state;
+    this.setState((prevState) => {
+      const { config , activeTab } = prevState;
 
-    // Need to perform deep copy, otherwise new config entry points to the same object
-    config.push(Object.assign({}, config[activeTab]));
-    
-    this.setState({ config, activeTab: config.length - 1 });
+      // Need to perform deep copy, otherwise new config entry points to the same object
+      config.push(Object.assign({}, config[activeTab]));
+      return { config, activeTab: config.length - 1 };
+    });
+  }
+
+  deleteTab(idx: number) {
+    return (e: React.MouseEvent<HTMLElement>) => {
+      e.stopPropagation();
+
+      this.setState((prevState) => {
+        const { config, activeTab } = prevState;
+        const newTab = activeTab === idx ? activeTab - 1 : 
+          activeTab > idx ? activeTab - 1 : activeTab; 
+        config.splice(idx, 1);
+
+        return { config, activeTab: newTab };
+      });
+    };
   }
 
   calculateSinkRate() {
@@ -90,13 +110,23 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
   }
 
   renderNavTabs() {
-    const { activeTab } = this.state;
+    const { activeTab, config: { length } } = this.state;
 
     return this.state.config.map((_, idx) => {
       return (
         <NavItem key={idx}>
           <NavLink active={idx === activeTab} onClick={this.toggleActiveTab(idx)}>
             {idx + 1}
+            { length === 1
+             ? undefined
+             :<Button 
+                className={'close'} 
+                color={'transparent'} 
+                style={{ marginLeft: '0.2rem' }} 
+                onClick={this.deleteTab(idx)}>
+                &times;
+              </Button>
+            }
           </NavLink>
         </NavItem>
       );

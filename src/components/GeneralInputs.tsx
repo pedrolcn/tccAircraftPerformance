@@ -42,7 +42,7 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
       <React.Fragment>
         <Button color="primary" onClick={this.toggleOpen} style={{ margin: '1rem 0' }} >
           Configurações Gerais
-          <span className={ isOpen ? 'caret-up' :'caret'}></span>
+          <span className={ isOpen ? 'caret-up' :'caret-down'}></span>
         </Button>
         <Collapse isOpen={isOpen}> 
           <FormGroup row>
