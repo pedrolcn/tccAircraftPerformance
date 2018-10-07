@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { Container, Col, Row, Nav, NavItem, NavLink, TabContent, TabPane, Button } from 'reactstrap';
-import { Inputs, Plot } from '../components';
-import AtmosIsa from '../util/atmosphere';
+import { InputsTab, GeneralInputs, Plot } from '../components';
+import AtmosIsa from 'util/Atmosphere';
+import { rangeInclusive } from 'util/FunctionUtils';
 
 export interface PerformanceViewProps {}
 
 export interface PerformanceViewState {
-  airspeed: number[];
+  vMin: number;
+  vMax: number;
+  deltaV: number;
   config: any[];
   activeTab: number;
   h: number;
@@ -24,23 +27,26 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
     super(props);
 
     this.state = {
-      airspeed: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
+      vMin: 5,
+      vMax: 100,
+      deltaV: 5,
+      h: 0,
       config: [{
         dragCD0: 0, // 0.01805,
         dragK: 0, // 0.05627,
         S: 0, // 153,
         W: 0, // 588600,
       }],
-      h: 0,
       activeTab: 0,
     };
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleInputs = this.handleInputs.bind(this);
+    this.handleGeneralInputs = this.handleGeneralInputs.bind(this);
     this.toggleActiveTab = this.toggleActiveTab.bind(this);
     this.addNewTab = this.addNewTab.bind(this);
   }
 
-  handleChange (idx: number) {
+  handleInputs (idx: number) {
     return (event: React.FormEvent<HTMLInputElement>) => {
       const { config } = this.state;
       const { name } = event.currentTarget;
@@ -54,6 +60,13 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
     };
   }
 
+  handleGeneralInputs (event: React.FormEvent<HTMLInputElement>) {
+    const { name } = event.currentTarget;
+    const nextState = Object.assign(this.state, { [name]: parseInt(event.currentTarget.value, 10) });
+
+    this.setState(nextState);
+  }
+
   addNewTab() {
     const { config , activeTab } = this.state;
 
@@ -64,12 +77,14 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
   }
 
   calculateSinkRate() {
-    const rho = AtmosIsa.density(this.state.h);
-    
+    const { h, vMin, vMax, deltaV } = this.state;
+    const rho = AtmosIsa.density(h);
+    const airspeed = rangeInclusive(vMin, vMax, deltaV);
+
     return this.state.config.map((config) => {
       const { dragK, dragCD0, S, W } = config;  
     
-      return this.state.airspeed.map(v =>
+      return airspeed.map(v =>
         ((rho * S * dragCD0 * v ** 3) / (2 * W) + (2 * dragK * W) / (rho * v * S)));
     });
   }
@@ -98,9 +113,9 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
     return this.state.config.map((config, idx) => {
       return (
         <TabPane tabId={idx} key={idx}>
-          <Inputs
+          <InputsTab
             index={idx}
-            changeHandler={this.handleChange(idx)}
+            changeHandler={this.handleInputs(idx)}
             config={config}
             h={this.state.h}
           />
@@ -110,17 +125,25 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
   }
 
   render() {
-    const { airspeed, activeTab } = this.state;
+    const { h, vMin, vMax, deltaV, activeTab } = this.state;
+    const airspeed = rangeInclusive(vMin, vMax, deltaV);
 
     return (
       <main role="main">
         <Container>
           <Row>
             <Col xs="3">
+              <GeneralInputs
+                h={h}
+                vMin={vMin}
+                vMax={vMax}
+                deltaV={deltaV}
+                changeHandler={this.handleGeneralInputs}
+              />
               <Nav tabs id="nav-tab" role="tablist">
                 {this.renderNavTabs()}
               </Nav>
-              <TabContent activeTab={activeTab}>
+              <TabContent activeTab={activeTab} style={{ marginTop: '0.5rem' }}>
                 {this.renderInputTabs()}
               </TabContent>
             <Button color="primary" onClick={this.addNewTab}>

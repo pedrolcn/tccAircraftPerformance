@@ -1,4 +1,5 @@
-import Inputs from './Inputs';
+import InputsTab from './InputsTab';
+import GeneralInputs from './GeneralInputs';
 import Plot from './Graph';
 
-export { Inputs, Plot };
+export { InputsTab, GeneralInputs, Plot };
