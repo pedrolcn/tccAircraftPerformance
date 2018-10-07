@@ -9,7 +9,7 @@ export interface InputProps {
   changeHandler: (event: React.FormEvent<HTMLInputElement>) => void;
 }
 
-const input: React.StatelessComponent<InputProps> = (props) => {
+const InputsTab: React.StatelessComponent<InputProps> = (props) => {
   const { index = 0, changeHandler, config, h } = props;
   return (
     <React.Fragment>
@@ -37,4 +37,4 @@ const input: React.StatelessComponent<InputProps> = (props) => {
   );
 };
 
-export default input;
+export default InputsTab;

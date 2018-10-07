@@ -55,15 +55,12 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
   }
 
   addNewTab() {
-    const { config } = this.state;
-    config.push({
-      dragCD0: 0,
-      dragK: 0,
-      S: 0,
-      W: 0,
-    });
+    const { config , activeTab } = this.state;
+
+    // Need to perform deep copy, otherwise new config entry points to the same object
+    config.push(Object.assign({}, config[activeTab]));
     
-    this.setState(prevState => ({ config, activeTab: prevState.activeTab + 1 }));
+    this.setState({ config, activeTab: config.length - 1 });
   }
 
   calculateSinkRate() {
