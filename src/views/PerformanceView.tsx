@@ -15,11 +15,22 @@ export interface PerformanceViewState {
   h: number;
 }
 
+export enum Motorizations {
+  JET = 'jet',
+  PROPELER = 'propeler',
+}
+
 export interface AircraftConfiguration {
+  motorization: Motorizations;
   dragK: number;
   dragCD0: number;
   W: number;
   S: number;
+  TSFC: number;
+  T0orP0: number;
+  CLMax: number;
+  loadFactor: number;
+  engineN: number;
 }
 
 export default class PerformanceView extends React.Component<PerformanceViewProps, PerformanceViewState> {
@@ -32,10 +43,16 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
       deltaV: 5,
       h: 0,
       config: [{
+        motorization: Motorizations.JET,
         dragCD0: 0, // 0.01805,
         dragK: 0, // 0.05627,
         S: 0, // 153,
         W: 0, // 588600,
+        TSFC: 0,
+        T0orP0: 0,
+        CLMax: 0,
+        loadFactor: 0,
+        engineN: 0,
       }],
       activeTab: 0,
     };
@@ -49,20 +66,15 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
 
   handleInputs (idx: number) {
     return (event: React.FormEvent<HTMLInputElement>) => {
-      const { name, value } = event.currentTarget;
+      const { value, type } = event.currentTarget;
+      let { name } = event.currentTarget;
+      this.setState((prevState) => {
+        const { config } = prevState;
+        name = type === 'radio' ? 'motorization' : name; 
 
-      if (name === 'h') {
-        this.setState({ h: parseInt(event.currentTarget.value, 10) });
-        
-      } else {
-        this.setState((prevState) => {
-          debugger;
-          const { config } = prevState;
-          config[idx][name] = value;
-
-          return { config };
-        });
-      }
+        config[idx][name] = value;
+        return { config };
+      });
     };
   }
 
@@ -144,7 +156,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
       return (
         <TabPane tabId={idx} key={idx}>
           <InputsTab
-            index={idx}
+            idx={idx}
             changeHandler={this.handleInputs(idx)}
             config={config}
             h={this.state.h}
@@ -161,15 +173,8 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
     return (
       <main role="main">
         <Container>
-          <Row>
-            <Col xs="3">
-              <GeneralInputs
-                h={h}
-                vMin={vMin}
-                vMax={vMax}
-                deltaV={deltaV}
-                changeHandler={this.handleGeneralInputs}
-              />
+          <Row className="main">
+            <Col xs="3" className="main-column">
               <Nav tabs id="nav-tab" role="tablist">
                 {this.renderNavTabs()}
               </Nav>
@@ -177,16 +182,23 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
                 {this.renderInputTabs()}
               </TabContent>
             <Button color="primary" onClick={this.addNewTab}>
-              +
+              Adicionar Aeronave +
             </Button>
             </Col>
-            <Col xs="9">
+            <Col xs="9" className="main-column">
               <Plot
                 airspeed={airspeed}
                 data={this.calculateSinkRate()}
               />
             </Col>
           </Row>
+          <GeneralInputs
+            h={h}
+            vMin={vMin}
+            vMax={vMax}
+            deltaV={deltaV}
+            changeHandler={this.handleGeneralInputs}
+          />
         </Container>
       </main>
     );

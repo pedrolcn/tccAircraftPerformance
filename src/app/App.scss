@@ -1,7 +1,18 @@
 @import "~bootstrap/scss/bootstrap.scss";
 
-html, body, #react-root, .container, .container>.row {
+html, body {
+  cursor: auto;
+}
+
+html, body, #react-root, .container {
   min-height: 100vh;
+}
+
+.main {
+  min-height: calc(100vh - 70px);
+  .main-column {
+    padding-top: 2vh;
+  }
 }
 
 %caret {
@@ -24,4 +35,22 @@ html, body, #react-root, .container, .container>.row {
   @extend %caret;
   border-top: .3em solid;
   border-bottom: 0;
+}
+
+abbr {
+  cursor: text !important;
+  text-decoration: none !important;
+}
+
+legend.col-form-label {
+  border-bottom: solid 1px #ccc;
+  margin-bottom: 0.3rem;
+  padding-bottom: 0;
+  padding-left: 2px;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.form-group {
+  margin-bottom: 0.3rem;
 }

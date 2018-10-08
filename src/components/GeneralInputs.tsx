@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Label, FormGroup, Input, Col, Button, Collapse } from 'reactstrap';
+import { Label, FormGroup, Input, Col, Button, Collapse, Row } from 'reactstrap';
 
 export interface GeneralInputProps {
   h: number;
@@ -40,35 +40,53 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
 
     return (
       <React.Fragment>
-        <Button color="primary" onClick={this.toggleOpen} style={{ margin: '1rem 0' }} >
+        <Button color="primary" onClick={this.toggleOpen} style={{ margin: '1rem 0' }} block>
           Configurações Gerais
           <span className={ isOpen ? 'caret-up' :'caret-down'}></span>
         </Button>
-        <Collapse isOpen={isOpen}> 
-          <FormGroup row>
-            <Label for="altitude" xs={6}>h [m]</Label>
-            <Col xs={6} >
-              <Input type="number" name="h" id="altitude" value={h} onChange={changeHandler}/>
+        <Collapse isOpen={isOpen}>
+          <Row>
+            <Col xs={3}>
+              <FormGroup row>
+                <Label for="altitude" xs={6}>
+                  <abbr title="Altitude [m]">h [m]</abbr>
+                </Label>
+                <Col xs={6}>
+                  <Input type="number" name="h" id="altitude" value={h} onChange={changeHandler} step={100}/>
+                </Col>
+              </FormGroup>
             </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label for="altitude" xs={6}>Vmin [m/s]</Label>
-            <Col xs={6}>
-              <Input type="number" name="vMin" id="vMin" value={vMin} onChange={changeHandler}/>
+            <Col xs={3}>
+              <FormGroup row>
+                <Label for="altitude" xs={6}>
+                  <abbr title="Velocidade minima [m/s]">V<sub>min</sub> [m/s]</abbr>
+                </Label>
+                <Col xs={6}>
+                  <Input type="number" name="vMin" id="vMin" value={vMin} onChange={changeHandler}/>
+                </Col>
+              </FormGroup>
             </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label for="altitude" xs={6}>Vmax [m/s]</Label>
-            <Col xs={6}>
-              <Input type="number" name="vMax" id="vMax" value={vMax} onChange={changeHandler}/>
+            <Col xs={3}>
+              <FormGroup row>
+              <Label for="altitude" xs={6}>
+                <abbr title="Velocidade Maxima [m/s]">V<sub>max</sub> [m/s]</abbr>
+              </Label>
+              <Col xs={6}>
+                <Input type="number" name="vMax" id="vMax" value={vMax} onChange={changeHandler}/>
+              </Col>
+              </FormGroup>
             </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label for="altitude" xs={6}>deltaV [m/s]</Label>
-            <Col xs={6}>
-              <Input type="number" name="deltaV" id="deltaV" value={deltaV} onChange={changeHandler}/>
+            <Col xs={3}>
+              <FormGroup row>
+                <Label for="altitude" xs={6}>
+                <abbr title="passo do eixo X [m/s]">&Delta;V [m/s]</abbr>
+                </Label>
+                <Col xs={6}>
+                  <Input type="number" name="deltaV" id="deltaV" value={deltaV} onChange={changeHandler}/>
+                </Col>
+              </FormGroup>
             </Col>
-          </FormGroup>
+          </Row>
         </Collapse>
       </React.Fragment>
     );
