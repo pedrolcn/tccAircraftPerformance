@@ -3,24 +3,16 @@ import { Container, Col, Row, Nav, NavItem, NavLink, TabContent, TabPane, Button
 import { InputsTab, GeneralInputs, Plot } from '../components';
 import EquationPlot from 'equations/Base';
 import * as equations from '../equations';
-
-export interface PerformanceViewProps {}
-
-export interface PerformanceViewState {
-  vMin: number;
-  vMax: number;
-  deltaV: number;
-  equations: {
-    eq: EquationPlot;
-    enabled: boolean;
-  }[];
-  configs: AircraftConfiguration[];
-  activeTab: number;
-}
+import { GeneralInputsValidationRunner } from '../validators';
 
 export enum Motorizations {
   JET = 'jet',
   PROPELER = 'propeler',
+}
+export interface FormData<T> {
+  values: T;
+  errors: { [K in keyof T]?: string };
+  invalid: { [K in keyof T]?: boolean };
 }
 
 export interface AircraftConfiguration {
@@ -37,27 +29,55 @@ export interface AircraftConfiguration {
   h: number;
 }
 
+export interface IGeneralInputs {
+  vMin: number;
+  vMax: number;
+  deltaV: number;
+}
+
+export interface PerformanceViewProps {}
+
+export interface PerformanceViewState {
+  general: FormData<IGeneralInputs>;
+  equations: {
+    eq: EquationPlot;
+    enabled: boolean;
+  }[];
+  configs: FormData<AircraftConfiguration>[];
+  activeTab: number;
+}
+
 export default class PerformanceView extends React.Component<PerformanceViewProps, PerformanceViewState> {
   constructor(props: PerformanceViewProps) {
     super(props);
 
     this.state = {
-      vMin: 5,
-      vMax: 100,
-      deltaV: 5,
+      general: {
+        values: {
+          vMin: 5,
+          vMax: 100,
+          deltaV: 5,
+        },
+        errors: {},
+        invalid: {},
+      },
       equations: Object.values(equations).map(e => ({ eq: e, enabled: false })),
       configs: [{
-        motorization: Motorizations.JET,
-        dragCD0: 0, // 0.01805,
-        dragK: 0, // 0.05627,
-        S: 0, // 153,
-        W: 0, // 588600,
-        TSFC: 0,
-        T0orP0: 0,
-        CLMax: 0,
-        loadFactor: 0,
-        engineN: 0,
-        h: 0,
+        values: {
+          motorization: Motorizations.JET,
+          dragCD0: 0, // 0.01805,
+          dragK: 0, // 0.05627,
+          S: 0, // 153,
+          W: 0, // 588600,
+          TSFC: 0,
+          T0orP0: 0,
+          CLMax: 0,
+          loadFactor: 0,
+          engineN: 0,
+          h: 0,
+        },
+        errors: {},
+        invalid: {},
       }],
       activeTab: 0,
     };
@@ -83,7 +103,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
           value = parseFloat(value);
         }
          
-        (configs as any[])[idx][name] = value;
+        (configs as any[])[idx].values[name] = value;
         return { configs };
       });
     };
@@ -91,7 +111,11 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
 
   handleGeneralInputs (event: React.FormEvent<HTMLInputElement>) {
     const { name, value } = event.currentTarget;
-    this.setState(prevState => Object.assign(prevState, { [name]: parseInt(value, 10) }));
+    this.setState((prevState) => {
+      let { general } = prevState;
+      general = GeneralInputsValidationRunner.run(general, name, value);
+      return { general };
+    });
   }
 
   handleEquations (event: React.FormEvent<HTMLInputElement>) {
@@ -100,7 +124,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
       const { equations } = prevState;
 
       equations[parseInt(name, 10)].enabled = checked;
-      return Object.assign(prevState, equations);
+      return { equations };
     });
   }
 
@@ -166,7 +190,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
           <InputsTab
             idx={idx}
             changeHandler={this.handleInputs(idx)}
-            config={config}
+            config={config.values}
           />
         </TabPane>
       );
@@ -174,7 +198,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
   }
 
   render() {
-    const { vMin, vMax, deltaV, activeTab, equations, configs } = this.state;
+    const { general, general: { values: { vMin, vMax, deltaV } }, activeTab, equations, configs } = this.state;
     const enabledEquations = equations
       .filter(e => e.enabled === true)
       .map(e => e.eq);
@@ -205,9 +229,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
             </Col>
           </Row>
           <GeneralInputs
-            vMin={vMin}
-            vMax={vMax}
-            deltaV={deltaV}
+            generalInputs={general}
             changeHandler={this.handleGeneralInputs}
             equations={equations}
             equationHandler={this.handleEquations}

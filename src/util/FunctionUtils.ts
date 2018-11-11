@@ -5,7 +5,7 @@
  * @param stop The ending number of the array
  * @param step The difference between neighboring numbers
  */
-const range = function (start: number, stop: number, step = 1): number[] {
+export const range = function (start: number, stop: number, step = 1): number[] {
   const sign = Math.sign(stop - start);
 
   return Array(Math.ceil(Math.abs(stop - start) / step))
@@ -20,7 +20,7 @@ const range = function (start: number, stop: number, step = 1): number[] {
  * @param stop The ending number of the array
  * @param step The difference between neighboring numbers
  */
-const rangeInclusive = function (start: number, stop: number, step = 1) {
+export const rangeInclusive = function (start: number, stop: number, step = 1) {
   const sign = Math.sign(stop - start);
   const rg = range(start, stop + sign * step, step);
 
@@ -29,4 +29,11 @@ const rangeInclusive = function (start: number, stop: number, step = 1) {
   return rg;
 };
 
-export { range, rangeInclusive };
+export const chunk = function (arr: any[], size: number) {
+  const out = [];
+  
+  for (let i = 0; i <= arr.length; i += size) {
+    out.push(arr.slice(i, i + size));
+  }
+  return out;
+}

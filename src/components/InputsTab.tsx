@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Label, FormGroup, Input, Col } from 'reactstrap';
+import { Label, FormGroup, Input, Col, CustomInput } from 'reactstrap';
 import { AircraftConfiguration, Motorizations } from 'views/PerformanceView';
 
 export interface InputProps {
@@ -16,24 +16,26 @@ const InputsTab: React.StatelessComponent<InputProps> = (props) => {
       <div>
         <legend className="col-form-label">Motorização:</legend>
         <FormGroup check inline>
-          <Input
+          <CustomInput
             type="radio"
             name={`motorization_${idx}`}
             id={`jet_${idx}`}
             checked={config.motorization === Motorizations.JET}
             value={Motorizations.JET}
-            onChange={changeHandler}/>
-          <Label check for={`jet_${idx}`}>Jato</Label>
+            onChange={changeHandler}
+            label="Jato"  
+          />
         </FormGroup>
         <FormGroup check inline>
-          <Input
+          <CustomInput
             type="radio"
             name={`motorization_${idx}`}
             id={`propeler_${idx}`}
             checked={config.motorization === Motorizations.PROPELER}
             value={Motorizations.PROPELER}
-            onChange={changeHandler}/>
-          <Label check for={`propeler_${idx}`}>Helice</Label>
+            onChange={changeHandler}
+            label="Helice"  
+          />
         </FormGroup>
         <FormGroup row>
           <Label for={`TSFC_${idx}`} xs={6}>

@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { Label, FormGroup, Input, Col, Button, Collapse, Row } from 'reactstrap';
+import { Label, FormGroup, Input, Col, Button, Collapse, Row, CustomInput, FormFeedback } from 'reactstrap';
 import EquationPlot from 'equations/Base';
+import { chunk } from '../util/FunctionUtils';
+import { FormData, IGeneralInputs } from 'views/PerformanceView';
+import { error } from 'util';
 
 export interface GeneralInputProps {
-  vMin: number;
-  vMax: number;
-  deltaV: number;
+  generalInputs: FormData<IGeneralInputs>;
   equations: {
     eq: EquationPlot;
     enabled: boolean;
@@ -36,26 +37,28 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
   renderEquationsMenu() {
     const { equations, equationHandler } = this.props;
 
-    return equations.map((e, idx) => 
-      <FormGroup check row>
-        <Label check xs={9} for={`eq_${idx}`}>
-          {e.eq.title}
-        </Label>
-        <Col xs={3}>
-          <Input
-            type="checkbox"
-            checked={e.enabled}
-            name={idx.toString()}
-            id={`eq_${idx}`}
-            onChange={equationHandler}
-          />
-        </Col>
+    return chunk(equations, 3).map(chunk =>
+      <FormGroup row>
+        {chunk.map((e, idx) => 
+          <Col xs={4}>
+            <FormGroup check style={{ paddingLeft: '0' }}>
+              <CustomInput
+                type="checkbox"
+                checked={e.enabled}
+                name={idx.toString()}
+                id={`eq_${idx}`}
+                onChange={equationHandler}
+                label={e.eq.title}
+              />
+            </FormGroup>
+          </Col>,
+        )}
       </FormGroup>,
     );
   }
 
   render () {
-    const { vMin, vMax, deltaV, changeHandler } = this.props;
+    const { generalInputs: { errors, values, invalid }, changeHandler } = this.props;
     const { isOpen } = this.state;
 
     return (
@@ -64,7 +67,7 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
           Configurações Gerais
           <span className={ isOpen ? 'caret-up' :'caret-down'}></span>
         </Button>
-        <Collapse isOpen={isOpen}>
+        <Collapse isOpen={isOpen} style={{ marginBottom: '15px' }}>
           <legend>Parâmetros gerais</legend>
           <Row>
             <Col xs={3}>
@@ -73,7 +76,8 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
                   <abbr title="Velocidade minima [m/s]">V<sub>min</sub> [m/s]</abbr>
                 </Label>
                 <Col xs={6}>
-                  <Input type="number" name="vMin" id="vMin" value={vMin} onChange={changeHandler}/>
+                  <Input type="number" name="vMin" id="vMin" value={values.vMin} onChange={changeHandler} invalid={invalid.vMin}/>
+                  <FormFeedback>{errors.vMin}</FormFeedback>
                 </Col>
               </FormGroup>
             </Col>
@@ -83,7 +87,8 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
                 <abbr title="Velocidade Maxima [m/s]">V<sub>max</sub> [m/s]</abbr>
               </Label>
               <Col xs={6}>
-                <Input type="number" name="vMax" id="vMax" value={vMax} onChange={changeHandler}/>
+                <Input type="number" name="vMax" id="vMax" value={values.vMax} onChange={changeHandler} invalid={invalid.vMax} />
+                <FormFeedback>{errors.vMax}</FormFeedback>
               </Col>
               </FormGroup>
             </Col>
@@ -93,15 +98,15 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
                 <abbr title="passo do eixo X [m/s]">&Delta;V [m/s]</abbr>
                 </Label>
                 <Col xs={6}>
-                  <Input type="number" name="deltaV" id="deltaV" value={deltaV} onChange={changeHandler}/>
+                  <Input type="number" name="deltaV" id="deltaV" value={values.deltaV} onChange={changeHandler} invalid={invalid.deltaV} />
+                  <FormFeedback>{errors.deltaV}</FormFeedback>
                 </Col>
               </FormGroup>
             </Col>
           </Row>
+          <hr />
           <legend>Graficos</legend>
-          <Row>
             {this.renderEquationsMenu()}
-          </Row>
         </Collapse>
       </React.Fragment>
     );

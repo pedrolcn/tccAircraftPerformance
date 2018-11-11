@@ -2,7 +2,7 @@ import * as React from 'react';
 import EquationPlot from 'equations/Base';
 import { Nav, TabContent, TabPane, NavItem, NavLink } from 'reactstrap';
 import { rangeInclusive } from '../util/FunctionUtils';
-import { AircraftConfiguration } from 'views/PerformanceView';
+import { AircraftConfiguration, FormData } from 'views/PerformanceView';
 
 // Create React component from custom bundle to reduce size
 const CreatePlotlyComponent = require('react-plotly.js/factory');
@@ -14,7 +14,7 @@ export interface GraphProps {
   vMax: number;
   deltaV: number;
   equations: EquationPlot[];
-  configs: AircraftConfiguration[];
+  configs: FormData<AircraftConfiguration>[];
 }
 
 export interface GraphState {
@@ -64,7 +64,7 @@ export default class Graph extends React.Component<GraphProps, GraphState> {
             data={
               configs.map((config, idx) => ({
                 x: airspeed,
-                y: eq ? eq.calculate(config, airspeed) : Array(airspeed.length).fill(null),
+                y: eq ? eq.calculate(config.values, airspeed) : Array(airspeed.length).fill(null),
                 type: 'scatter',
                 mode: 'lines+markers',
                 name: (idx + 1).toString(),
