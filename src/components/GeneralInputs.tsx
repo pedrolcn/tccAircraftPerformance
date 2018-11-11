@@ -1,11 +1,17 @@
 import * as React from 'react';
 import { Label, FormGroup, Input, Col, Button, Collapse, Row } from 'reactstrap';
+import EquationPlot from 'equations/Base';
 
 export interface GeneralInputProps {
   vMin: number;
   vMax: number;
   deltaV: number;
+  equations: {
+    eq: EquationPlot;
+    enabled: boolean;
+  }[];
   changeHandler: (event: React.FormEvent<HTMLInputElement>) => void;
+  equationHandler: (event: React.FormEvent<HTMLInputElement>) => void;
 }
 
 export interface GeneralInputsState {
@@ -27,6 +33,27 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
     this.setState(prevState => ({ isOpen: !prevState.isOpen }));
   }
 
+  renderEquationsMenu() {
+    const { equations, equationHandler } = this.props;
+
+    return equations.map((e, idx) => 
+      <FormGroup check row>
+        <Label check xs={9} for={`eq_${idx}`}>
+          {e.eq.title}
+        </Label>
+        <Col xs={3}>
+          <Input
+            type="checkbox"
+            checked={e.enabled}
+            name={idx.toString()}
+            id={`eq_${idx}`}
+            onChange={equationHandler}
+          />
+        </Col>
+      </FormGroup>,
+    );
+  }
+
   render () {
     const { vMin, vMax, deltaV, changeHandler } = this.props;
     const { isOpen } = this.state;
@@ -38,6 +65,7 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
           <span className={ isOpen ? 'caret-up' :'caret-down'}></span>
         </Button>
         <Collapse isOpen={isOpen}>
+          <legend>Parâmetros gerais</legend>
           <Row>
             <Col xs={3}>
               <FormGroup row>
@@ -69,6 +97,10 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
                 </Col>
               </FormGroup>
             </Col>
+          </Row>
+          <legend>Graficos</legend>
+          <Row>
+            {this.renderEquationsMenu()}
           </Row>
         </Collapse>
       </React.Fragment>

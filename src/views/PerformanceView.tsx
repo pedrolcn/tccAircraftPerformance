@@ -10,7 +10,10 @@ export interface PerformanceViewState {
   vMin: number;
   vMax: number;
   deltaV: number;
-  equations: EquationPlot[];
+  equations: {
+    eq: EquationPlot;
+    enabled: boolean;
+  }[];
   configs: AircraftConfiguration[];
   activeTab: number;
 }
@@ -42,7 +45,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
       vMin: 5,
       vMax: 100,
       deltaV: 5,
-      equations: (Object as any).values(equations),
+      equations: Object.values(equations).map(e => ({ eq: e, enabled: false })),
       configs: [{
         motorization: Motorizations.JET,
         dragCD0: 0, // 0.01805,
@@ -61,6 +64,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
 
     this.handleInputs = this.handleInputs.bind(this);
     this.handleGeneralInputs = this.handleGeneralInputs.bind(this);
+    this.handleEquations = this.handleEquations.bind(this);
     this.toggleActiveTab = this.toggleActiveTab.bind(this);
     this.addNewTab = this.addNewTab.bind(this);
     this.deleteTab = this.deleteTab.bind(this);
@@ -90,6 +94,16 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
     this.setState(prevState => Object.assign(prevState, { [name]: parseInt(value, 10) }));
   }
 
+  handleEquations (event: React.FormEvent<HTMLInputElement>) {
+    const { name, checked } = event.currentTarget;
+    this.setState((prevState) => {
+      const { equations } = prevState;
+
+      equations[parseInt(name, 10)].enabled = checked;
+      return Object.assign(prevState, equations);
+    });
+  }
+
   addNewTab() {
     this.setState((prevState) => {
       const { configs , activeTab } = prevState;
@@ -116,9 +130,9 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
   }
 
   renderNavTabs() {
-    const { activeTab, configs: { length } } = this.state;
+    const { activeTab, configs, configs: { length } } = this.state;
 
-    return this.state.configs.map((_, idx) => {
+    return configs.map((_, idx) => {
       return (
         <NavItem key={idx}>
           <NavLink active={idx === activeTab} onClick={this.toggleActiveTab(idx)}>
@@ -161,6 +175,9 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
 
   render() {
     const { vMin, vMax, deltaV, activeTab, equations, configs } = this.state;
+    const enabledEquations = equations
+      .filter(e => e.enabled === true)
+      .map(e => e.eq);
 
     return (
       <main role="main">
@@ -183,7 +200,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
                 vMin={vMin}
                 vMax={vMax}
                 deltaV={deltaV}
-                equations={equations}
+                equations={enabledEquations}
               />
             </Col>
           </Row>
@@ -192,9 +209,23 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
             vMax={vMax}
             deltaV={deltaV}
             changeHandler={this.handleGeneralInputs}
+            equations={equations}
+            equationHandler={this.handleEquations}
           />
         </Container>
       </main>
     );
+  }
+}
+
+declare global {
+  interface Object {
+    /**
+     * Returns an array of a given object's own enumerable property values,in the same order as that provided by a
+     * for...in loop (the difference being that a for-in loop enumerates properties in the prototype chain as well).
+     * 
+     * @param o The object whose enumerable own property values are to be returned. 
+     */
+    values: (o: {}) => any[];
   }
 }
