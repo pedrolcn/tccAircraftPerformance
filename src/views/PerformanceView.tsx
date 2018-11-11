@@ -133,7 +133,12 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
       const { configs , activeTab } = prevState;
 
       // Need to perform deep copy, otherwise new config entry points to the same object
-      configs.push(Object.assign({}, configs[activeTab]));
+      // Nested deepCopy suuuuuucks
+      configs.push(Object.assign({}, {
+        errors: {},
+        invalid: {},
+        values: Object.assign({}, configs[activeTab].values),
+      }));
       return { configs, activeTab: configs.length - 1 };
     });
   }
