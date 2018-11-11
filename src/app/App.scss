@@ -53,4 +53,14 @@ legend.col-form-label {
 
 .form-group {
   margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.form-control {
+  font-size: 0.9rem;
+  height: calc(2rem + 2px);
 }

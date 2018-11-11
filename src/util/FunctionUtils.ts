@@ -5,7 +5,7 @@
  * @param stop The ending number of the array
  * @param step The difference between neighboring numbers
  */
-const range = function (start: number, stop: number, step = 1) {
+const range = function (start: number, stop: number, step = 1): number[] {
   const sign = Math.sign(stop - start);
 
   return Array(Math.ceil(Math.abs(stop - start) / step))

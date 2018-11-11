@@ -1,4 +1,7 @@
 import * as React from 'react';
+import EquationPlot from 'equations/Base';
+import { rangeInclusive } from '../util/FunctionUtils';
+import { AircraftConfiguration } from 'views/PerformanceView';
 
 // Create React component from custom bundle to reduce size
 const CreatePlotlyComponent = require('react-plotly.js/factory');
@@ -6,22 +9,28 @@ const Plotly = require('plotly.js-basic-dist');
 const Plot = CreatePlotlyComponent(Plotly);
 
 export interface PlotProps {
-  airspeed: number[];
-  data: number[][];
+  vMin: number;
+  vMax: number;
+  deltaV: number;
+  equations: EquationPlot[];
+  configs: AircraftConfiguration[];
 }
 
-const plot: React.StatelessComponent<PlotProps> = ({ airspeed, data }) => {
+const plot: React.StatelessComponent<PlotProps> = ({ equations, configs,  vMin, vMax, deltaV }) => {
+  const equation = equations[0];
+  const airspeed = rangeInclusive(vMin, vMax, deltaV);
+
   return <Plot
-      data={data.map((d, idx) => (
-      {
-        x: airspeed,
-        y: d,
-        type: 'scatter',
-        mode: 'lines+markers',
-        name: (idx + 1).toString(),
-      } as Partial<Plotly.Data>
-      ))}
-      layout={{ autosize: true, title: 'Sink Rate vs Airspeed' }}
+      data={
+        configs.map((config, idx) => ({
+          x: airspeed,
+          y: equation.calculate(config, airspeed),
+          type: 'scatter',
+          mode: 'lines+markers',
+          name: (idx + 1).toString(),
+        } as Partial<Plotly.Data>))
+      }
+      layout={{ autosize: true, title: equation.title }}
       style={{ width: '100%', height: '100%' }}
       useResizeHandler
       config={{

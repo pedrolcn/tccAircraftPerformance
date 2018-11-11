@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Label, FormGroup, Input, Col, Button, Collapse, Row } from 'reactstrap';
 
 export interface GeneralInputProps {
-  h: number;
   vMin: number;
   vMax: number;
   deltaV: number;
@@ -29,13 +28,7 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
   }
 
   render () {
-    const {
-      h,
-      vMin,
-      vMax,
-      deltaV,
-      changeHandler,
-    } = this.props;
+    const { vMin, vMax, deltaV, changeHandler } = this.props;
     const { isOpen } = this.state;
 
     return (
@@ -48,17 +41,7 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
           <Row>
             <Col xs={3}>
               <FormGroup row>
-                <Label for="altitude" xs={6}>
-                  <abbr title="Altitude [m]">h [m]</abbr>
-                </Label>
-                <Col xs={6}>
-                  <Input type="number" name="h" id="altitude" value={h} onChange={changeHandler} step={100}/>
-                </Col>
-              </FormGroup>
-            </Col>
-            <Col xs={3}>
-              <FormGroup row>
-                <Label for="altitude" xs={6}>
+                <Label for="vMin" xs={6}>
                   <abbr title="Velocidade minima [m/s]">V<sub>min</sub> [m/s]</abbr>
                 </Label>
                 <Col xs={6}>
@@ -68,7 +51,7 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
             </Col>
             <Col xs={3}>
               <FormGroup row>
-              <Label for="altitude" xs={6}>
+              <Label for="vMax" xs={6}>
                 <abbr title="Velocidade Maxima [m/s]">V<sub>max</sub> [m/s]</abbr>
               </Label>
               <Col xs={6}>
@@ -78,7 +61,7 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
             </Col>
             <Col xs={3}>
               <FormGroup row>
-                <Label for="altitude" xs={6}>
+                <Label for="deltaV" xs={6}>
                 <abbr title="passo do eixo X [m/s]">&Delta;V [m/s]</abbr>
                 </Label>
                 <Col xs={6}>

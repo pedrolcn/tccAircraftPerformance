@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Container, Col, Row, Nav, NavItem, NavLink, TabContent, TabPane, Button } from 'reactstrap';
 import { InputsTab, GeneralInputs, Plot } from '../components';
-import AtmosIsa from 'util/Atmosphere';
-import { rangeInclusive } from 'util/FunctionUtils';
+import EquationPlot from 'equations/Base';
+import * as equations from '../equations';
 
 export interface PerformanceViewProps {}
 
@@ -10,9 +10,9 @@ export interface PerformanceViewState {
   vMin: number;
   vMax: number;
   deltaV: number;
-  config: any[];
+  equations: EquationPlot[];
+  configs: AircraftConfiguration[];
   activeTab: number;
-  h: number;
 }
 
 export enum Motorizations {
@@ -31,6 +31,7 @@ export interface AircraftConfiguration {
   CLMax: number;
   loadFactor: number;
   engineN: number;
+  h: number;
 }
 
 export default class PerformanceView extends React.Component<PerformanceViewProps, PerformanceViewState> {
@@ -41,8 +42,8 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
       vMin: 5,
       vMax: 100,
       deltaV: 5,
-      h: 0,
-      config: [{
+      equations: (Object as any).values(equations),
+      configs: [{
         motorization: Motorizations.JET,
         dragCD0: 0, // 0.01805,
         dragK: 0, // 0.05627,
@@ -53,6 +54,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
         CLMax: 0,
         loadFactor: 0,
         engineN: 0,
+        h: 0,
       }],
       activeTab: 0,
     };
@@ -66,14 +68,19 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
 
   handleInputs (idx: number) {
     return (event: React.FormEvent<HTMLInputElement>) => {
-      const { value, type } = event.currentTarget;
-      let { name } = event.currentTarget;
-      this.setState((prevState) => {
-        const { config } = prevState;
-        name = type === 'radio' ? 'motorization' : name; 
+      const { type } = event.currentTarget;
+      let { name, value }: { name: string, value: any } = event.currentTarget;
 
-        config[idx][name] = value;
-        return { config };
+      this.setState((prevState) => {
+        const { configs } = prevState;
+        if (type === 'radio') {
+          name = 'motorization';
+        } else {
+          value = parseFloat(value);
+        }
+         
+        (configs as any[])[idx][name] = value;
+        return { configs };
       });
     };
   }
@@ -85,11 +92,11 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
 
   addNewTab() {
     this.setState((prevState) => {
-      const { config , activeTab } = prevState;
+      const { configs , activeTab } = prevState;
 
       // Need to perform deep copy, otherwise new config entry points to the same object
-      config.push(Object.assign({}, config[activeTab]));
-      return { config, activeTab: config.length - 1 };
+      configs.push(Object.assign({}, configs[activeTab]));
+      return { configs, activeTab: configs.length - 1 };
     });
   }
 
@@ -98,33 +105,20 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
       e.stopPropagation();
 
       this.setState((prevState) => {
-        const { config, activeTab } = prevState;
+        const { configs, activeTab } = prevState;
         const newTab = activeTab === idx ? activeTab - 1 : 
           activeTab > idx ? activeTab - 1 : activeTab; 
-        config.splice(idx, 1);
+        configs.splice(idx, 1);
 
-        return { config, activeTab: newTab };
+        return { configs, activeTab: newTab };
       });
     };
   }
 
-  calculateSinkRate() {
-    const { h, vMin, vMax, deltaV } = this.state;
-    const rho = AtmosIsa.density(h);
-    const airspeed = rangeInclusive(vMin, vMax, deltaV);
-
-    return this.state.config.map((config) => {
-      const { dragK, dragCD0, S, W } = config;  
-    
-      return airspeed.map(v =>
-        ((rho * S * dragCD0 * v ** 3) / (2 * W) + (2 * dragK * W) / (rho * v * S)));
-    });
-  }
-
   renderNavTabs() {
-    const { activeTab, config: { length } } = this.state;
+    const { activeTab, configs: { length } } = this.state;
 
-    return this.state.config.map((_, idx) => {
+    return this.state.configs.map((_, idx) => {
       return (
         <NavItem key={idx}>
           <NavLink active={idx === activeTab} onClick={this.toggleActiveTab(idx)}>
@@ -152,14 +146,13 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
   }
 
   renderInputTabs() {
-    return this.state.config.map((config, idx) => {
+    return this.state.configs.map((config, idx) => {
       return (
         <TabPane tabId={idx} key={idx}>
           <InputsTab
             idx={idx}
             changeHandler={this.handleInputs(idx)}
             config={config}
-            h={this.state.h}
           />
         </TabPane>
       );
@@ -167,8 +160,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
   }
 
   render() {
-    const { h, vMin, vMax, deltaV, activeTab } = this.state;
-    const airspeed = rangeInclusive(vMin, vMax, deltaV);
+    const { vMin, vMax, deltaV, activeTab, equations, configs } = this.state;
 
     return (
       <main role="main">
@@ -181,19 +173,21 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
               <TabContent activeTab={activeTab} style={{ marginTop: '0.5rem' }}>
                 {this.renderInputTabs()}
               </TabContent>
-            <Button color="primary" onClick={this.addNewTab}>
+            <Button color="primary" onClick={this.addNewTab} style={{ marginTop: '5px' }}>
               Adicionar Aeronave +
             </Button>
             </Col>
             <Col xs="9" className="main-column">
               <Plot
-                airspeed={airspeed}
-                data={this.calculateSinkRate()}
+                configs={configs}
+                vMin={vMin}
+                vMax={vMax}
+                deltaV={deltaV}
+                equations={equations}
               />
             </Col>
           </Row>
           <GeneralInputs
-            h={h}
             vMin={vMin}
             vMax={vMax}
             deltaV={deltaV}
