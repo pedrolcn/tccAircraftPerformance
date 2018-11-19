@@ -2,7 +2,8 @@ import * as React from 'react';
 import EquationPlot from 'equations/Base';
 import { Nav, TabContent, TabPane, NavItem, NavLink } from 'reactstrap';
 import { rangeInclusive } from '../util/FunctionUtils';
-import { AircraftConfiguration, FormData } from 'views/PerformanceView';
+import { AircraftConfiguration } from 'views/PerformanceView';
+import { FormData } from 'ecv-validation';
 
 // Create React component from custom bundle to reduce size
 const CreatePlotlyComponent = require('react-plotly.js/factory');

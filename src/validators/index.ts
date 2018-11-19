@@ -1,1 +1,2 @@
-export { default as GeneralInputsValidationRunner }  from './generalInputs/generalInputsValidationRunner';
+export { default as GeneralInputsValidationRunner }  from './generalInputsValidationRunner';
+export { default as InputsValidationRunner } from './inputsValidationRunner';

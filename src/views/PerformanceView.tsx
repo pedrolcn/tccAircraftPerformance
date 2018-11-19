@@ -3,16 +3,12 @@ import { Container, Col, Row, Nav, NavItem, NavLink, TabContent, TabPane, Button
 import { InputsTab, GeneralInputs, Plot } from '../components';
 import EquationPlot from 'equations/Base';
 import * as equations from '../equations';
-import { GeneralInputsValidationRunner } from '../validators';
+import { GeneralInputsValidationRunner, InputsValidationRunner } from '../validators';
+import { FormData } from 'ecv-validation';
 
 export enum Motorizations {
   JET = 'jet',
   PROPELER = 'propeler',
-}
-export interface FormData<T> {
-  values: T;
-  errors: { [K in keyof T]?: string };
-  invalid: { [K in keyof T]?: boolean };
 }
 
 export interface AircraftConfiguration {
@@ -92,18 +88,17 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
 
   handleInputs (idx: number) {
     return (event: React.FormEvent<HTMLInputElement>) => {
-      const { type } = event.currentTarget;
-      let { name, value }: { name: string, value: any } = event.currentTarget;
+      const { type, value } = event.currentTarget;
+      let { name }: { name: string } = event.currentTarget;
 
       this.setState((prevState) => {
         const { configs } = prevState;
         if (type === 'radio') {
           name = 'motorization';
         } else {
-          value = parseFloat(value);
+          configs[idx] = InputsValidationRunner.run(configs[idx], name, value);
         }
-         
-        (configs as any[])[idx].values[name] = value;
+
         return { configs };
       });
     };
@@ -195,7 +190,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
           <InputsTab
             idx={idx}
             changeHandler={this.handleInputs(idx)}
-            config={config.values}
+            config={config}
           />
         </TabPane>
       );

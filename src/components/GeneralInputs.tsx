@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Label, FormGroup, Input, Col, Button, Collapse, Row, CustomInput, FormFeedback } from 'reactstrap';
 import EquationPlot from 'equations/Base';
 import { chunk } from '../util/FunctionUtils';
-import { FormData, IGeneralInputs } from 'views/PerformanceView';
-import { error } from 'util';
+import { IGeneralInputs } from 'views/PerformanceView';
+import { FormData } from 'ecv-validation';
 
 export interface GeneralInputProps {
   generalInputs: FormData<IGeneralInputs>;

@@ -2746,6 +2746,10 @@ ecc-jsbn@~0.1.1:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
 
+ecv-validation@estudarcomvoce/ecv-validation#master:
+  version "0.1.0"
+  resolved "https://codeload.github.com/estudarcomvoce/ecv-validation/tar.gz/c9610d4c55d4cf99b4718cc89aa10ff85bcf3ed0"
+
 ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
