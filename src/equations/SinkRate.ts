@@ -17,4 +17,4 @@ const sinkRate: Equation = (config: AircraftConfiguration, xCoordinate: number[]
   });
 };
 
-export default new EquationPlot('Sink Rate', sinkRate, { yLabel: 'ROD [m/s]' });
+export default new EquationPlot('ROD vs Velocidade', sinkRate, { yLabel: 'ROD [m/s]' });
