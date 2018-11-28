@@ -4,3 +4,5 @@ export { default as ClimbRate } from './ClimbRate';
 export { default as MaxROC } from './MaxROC';
 export { default as RangePayload } from './RangePayload';
 export { default as MaxEficiencySpeed } from './MaxEficiencySpeed';
+export { default as TakeoffDistance } from './TakeoffDistance';
+export { default as LandingDistance } from './LandingDistance';

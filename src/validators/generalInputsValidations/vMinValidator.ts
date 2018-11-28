@@ -1,8 +1,8 @@
 import { Validation, largerThanOrEqual, required } from 'ecv-validation';
 
 export default new Validation(
-  'vMin',
-  'velocidade minima',
+  'xMin',
+  'X minimo',
   'number',
   [required, largerThanOrEqual(2)],
 );

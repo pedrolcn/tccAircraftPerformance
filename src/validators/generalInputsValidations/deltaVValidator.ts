@@ -1,8 +1,8 @@
 import { Validation, largerThan, required } from 'ecv-validation';
 
 export default new Validation(
-  'deltaV',
-  'delta V',
+  'deltaX',
+  'delta X',
   'number',
   [required, largerThan(0)],
 );
