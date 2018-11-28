@@ -2748,7 +2748,7 @@ ecc-jsbn@~0.1.1:
 
 ecv-validation@estudarcomvoce/ecv-validation#master:
   version "0.1.0"
-  resolved "https://codeload.github.com/estudarcomvoce/ecv-validation/tar.gz/c9610d4c55d4cf99b4718cc89aa10ff85bcf3ed0"
+  resolved "https://codeload.github.com/estudarcomvoce/ecv-validation/tar.gz/e107b60c8e9b3140cc908cdc025b57d0af3be1b4"
 
 ee-first@1.1.1:
   version "1.1.1"
