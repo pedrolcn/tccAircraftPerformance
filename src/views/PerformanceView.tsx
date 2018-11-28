@@ -19,6 +19,7 @@ export interface AircraftConfiguration {
   dragCD0Takeoff: number;
   W0: number;
   Wf: number;
+  Wpl: number;
   Wmax: number;
   S: number;
   TSFC: number;
@@ -71,6 +72,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
           dragK: 0,
           S: 0,
           W0: 0,
+          Wpl: 0,
           Wf: 0,
           Wmax: 0,
           TSFC: 0,

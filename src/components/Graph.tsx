@@ -59,7 +59,7 @@ export default class Graph extends React.Component<GraphProps, GraphState> {
     const transformedX = xCoordinate.map(x => x * settings.xScale);
 
     const data = configs.map((config, idx) => ({
-      x: transformedX,
+      x: settings.overideX ? settings.overideX(config.values) : transformedX,
       y: equation ? equation.calculate(config.values, transformedX) : Array(xCoordinate.length).fill(null),
       type: 'scatter',
       mode: 'lines+markers',

@@ -10,6 +10,7 @@ export default new ValidationRunner<AircraftConfiguration>(
   Validations.W0Validation,
   Validations.WfValidation,
   Validations.WmaxValidation,
+  Validations.WplValidation,
   Validations.dragCD0CruiseValidation,
   Validations.dragCD0LandingValidation,
   Validations.dragCD0TakeoffValidation,

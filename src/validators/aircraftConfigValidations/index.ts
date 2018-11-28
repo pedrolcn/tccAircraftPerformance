@@ -5,6 +5,7 @@ export { default as TSFCValidation } from './TSFCValidation';
 export { default as W0Validation } from './W0Validation';
 export { default as WfValidation } from './WfValidation';
 export { default as WmaxValidation } from './WmaxValidation';
+export { default as WplValidation } from './WplValidation';
 export { default as dragCD0CruiseValidation } from './dragCD0CruiseValidation';
 export { default as dragCD0TakeoffValidation } from './dragCD0TakeoffValidation';
 export { default as dragCD0LandingValidation } from './dragCD0LandingValidation';

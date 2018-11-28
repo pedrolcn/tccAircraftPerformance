@@ -36,6 +36,13 @@ const dragCD0Form: React.StatelessComponent<DragCD0FormProps> = (props) => {
           <FormFeedback>{errors.Wmax}</FormFeedback>
         </Col>
       </FormGroup>
+      <FormGroup row>
+        <Label for={`weigthpl_${idx}`} xs={6}><abbr title="Peso Máximo de Carga Paga ">W<sub>PL</sub> [N]</abbr></Label>
+        <Col xs={6}>
+          <Input type="number" name="Wpl" id={`weigthpl_${idx}`} value={values.Wpl} onChange={changeHandler} step={100} invalid={invalid.Wpl}/>
+          <FormFeedback>{errors.Wpl}</FormFeedback>
+        </Col>
+      </FormGroup>
     </Collapse>
   );
 };
