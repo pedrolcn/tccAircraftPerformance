@@ -23,4 +23,5 @@ const climbRate: Equation = (config: AircraftConfiguration, xCoordinate: number[
   return [];
 };
 
-export default new EquationPlot('Velocidade de subida', climbRate);
+export { climbRate };
+export default new EquationPlot('Velocidade de subida', climbRate, { yLabel: 'ROC [m/s]' });

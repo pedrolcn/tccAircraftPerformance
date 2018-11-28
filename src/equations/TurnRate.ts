@@ -9,4 +9,4 @@ const turnRate: Equation = (config: AircraftConfiguration, xCoordinate: number[]
   return xCoordinate.map(v => (G / v) * Math.sqrt(loadFactor ** 2 - 1));
 };
 
-export default new EquationPlot('Razão de Curva', turnRate);
+export default new EquationPlot('Razão de Curva', turnRate, { yLabel: 'omega [rad/s]' });
