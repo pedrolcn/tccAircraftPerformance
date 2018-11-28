@@ -1,5 +1,5 @@
 import * as React from 'react';
-import EquationPlot from 'equations/Base';
+import EquationPlot, { Equation } from 'equations/Base';
 import { Nav, TabContent, TabPane, NavItem, NavLink } from 'reactstrap';
 import { rangeInclusive } from '../util/FunctionUtils';
 import { AircraftConfiguration } from 'views/PerformanceView';
@@ -54,24 +54,44 @@ export default class Graph extends React.Component<GraphProps, GraphState> {
     });
   }
 
+  preprocessPlot(equation: EquationPlot, configs: FormData<AircraftConfiguration>[], xCoordinate: number[]) {
+    const { settings } = equation;
+    const transformedX = xCoordinate.map(x => x * settings.xScale);
+
+    const data = configs.map((config, idx) => ({
+      x: transformedX,
+      y: equation ? equation.calculate(config.values, transformedX) : Array(xCoordinate.length).fill(null),
+      type: 'scatter',
+      mode: 'lines+markers',
+      name: (idx + 1).toString(),
+    } as Plotly.Data));
+
+    const layout = {
+      autosize: true,
+      title: equation ? equation.title : undefined,
+      xaxis: {
+        title: settings.xLabel,
+      },
+      yaxis: {
+        title: settings.yLabel,
+      },
+    } as Plotly.Layout;
+
+    return { data, layout }; 
+  }
+
   renderPlots() {
     const { vMin, vMax, deltaV, configs, equations } = this.props;
-    const airspeed = rangeInclusive(vMin, vMax, deltaV);
+    const xCoordinate = rangeInclusive(vMin, vMax, deltaV);
   
     return equations.map((eq, idx) => {
+      const { data, layout } = this.preprocessPlot(eq, configs, xCoordinate);
+
       return (
         <TabPane tabId={idx} key={idx} style={{ height: '100%' }}>
           <Plot
-            data={
-              configs.map((config, idx) => ({
-                x: airspeed,
-                y: eq ? eq.calculate(config.values, airspeed) : Array(airspeed.length).fill(null),
-                type: 'scatter',
-                mode: 'lines+markers',
-                name: (idx + 1).toString(),
-              } as Partial<Plotly.Data>))
-            }
-            layout={{ autosize: true, title: eq ? eq.title : undefined }}
+            data={data}
+            layout={layout}
             style={{ width: '100%', height: '100%' }}
             useResizeHandler
             config={{
