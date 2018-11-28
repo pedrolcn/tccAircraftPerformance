@@ -14,8 +14,12 @@ export enum Motorizations {
 export interface AircraftConfiguration {
   motorization: Motorizations;
   dragK: number;
-  dragCD0: number;
-  W: number;
+  dragCD0Cruise: number;
+  dragCD0Landing: number;
+  dragCD0Takeoff: number;
+  W0: number;
+  Wf: number;
+  Wmax: number;
   S: number;
   TSFC: number;
   T0orP0: number;
@@ -61,10 +65,14 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
       configs: [{
         values: {
           motorization: Motorizations.JET,
-          dragCD0: 0, // 0.01805,
-          dragK: 0, // 0.05627,
-          S: 0, // 153,
-          W: 0, // 588600,
+          dragCD0Cruise: 0,
+          dragCD0Landing: 0,
+          dragCD0Takeoff: 0,
+          dragK: 0,
+          S: 0,
+          W0: 0,
+          Wf: 0,
+          Wmax: 0,
           TSFC: 0,
           T0orP0: 0,
           CLMax: 0,

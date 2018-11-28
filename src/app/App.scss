@@ -68,3 +68,41 @@ legend.col-form-label {
 .graph-tab {
   height: calc(100% - 42px)
 }
+
+.subform-button {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 4px;
+  box-shadow: 1px 1px 3px 1px #ABABAB;
+
+  &.active {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: none;
+  }
+
+  &:hover {
+    transform: scale(1.01);
+    color: blue;
+  }
+}
+
+.subform {
+  margin-bottom: 4px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding-right: 5px;
+  padding-bottom: 4px;
+
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+
+  abbr {
+    padding-left: 15px;
+  }
+}
