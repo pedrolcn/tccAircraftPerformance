@@ -31,9 +31,9 @@ export interface AircraftConfiguration {
 }
 
 export interface IGeneralInputs {
-  vMin: number;
-  vMax: number;
-  deltaV: number;
+  xMin: number;
+  xMax: number;
+  deltaX: number;
 }
 
 export interface PerformanceViewProps {}
@@ -55,9 +55,9 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
     this.state = {
       general: {
         values: {
-          vMin: 5,
-          vMax: 100,
-          deltaV: 5,
+          xMin: 5,
+          xMax: 100,
+          deltaX: 5,
         },
         errors: {},
         invalid: {},
@@ -209,7 +209,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
   }
 
   render() {
-    const { general, general: { values: { vMin, vMax, deltaV } }, activeTab, equations, configs } = this.state;
+    const { general, general: { values: { xMin, xMax, deltaX } }, activeTab, equations, configs } = this.state;
     const enabledEquations = equations
       .filter(e => e.enabled === true)
       .map(e => e.eq);
@@ -232,9 +232,9 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
             <Col xs="9" className="main-column">
               <Plot
                 configs={configs}
-                vMin={vMin}
-                vMax={vMax}
-                deltaV={deltaV}
+                vMin={xMin}
+                vMax={xMax}
+                deltaV={deltaX}
                 equations={enabledEquations}
               />
             </Col>

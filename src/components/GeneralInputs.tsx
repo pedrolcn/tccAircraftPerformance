@@ -36,23 +36,28 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
 
   renderEquationsMenu() {
     const { equations, equationHandler } = this.props;
+    let globalIdx = 0;
 
     return chunk(equations, 3).map(chunk =>
       <FormGroup row>
-        {chunk.map((e, idx) => 
-          <Col xs={4}>
-            <FormGroup check style={{ paddingLeft: '0' }}>
-              <CustomInput
-                type="checkbox"
-                checked={e.enabled}
-                name={idx.toString()}
-                id={`eq_${idx}`}
-                onChange={equationHandler}
-                label={e.eq.title}
-              />
-            </FormGroup>
-          </Col>,
-        )}
+        {chunk.map((e) => {
+          const idx = globalIdx;
+          globalIdx += 1;
+          return (
+            <Col xs={4}>
+              <FormGroup check style={{ paddingLeft: '0' }}>
+                <CustomInput
+                  type="checkbox"
+                  checked={e.enabled}
+                  name={idx.toString()}
+                  id={`eq_${idx}`}
+                  onChange={equationHandler}
+                  label={e.eq.title}
+                />
+              </FormGroup>
+            </Col>
+          );
+        })}
       </FormGroup>,
     );
   }
@@ -72,34 +77,34 @@ export default class GeneralInputs extends React.Component<GeneralInputProps, Ge
           <Row>
             <Col xs={3}>
               <FormGroup row>
-                <Label for="vMin" xs={6}>
-                  <abbr title="Velocidade minima [m/s]">V<sub>min</sub> [m/s]</abbr>
+                <Label for="xMin" xs={6}>
+                  <abbr title="Valor minimo do eixo X">X<sub>min</sub></abbr>
                 </Label>
                 <Col xs={6}>
-                  <Input type="number" name="vMin" id="vMin" value={values.vMin} onChange={changeHandler} invalid={invalid.vMin}/>
-                  <FormFeedback>{errors.vMin}</FormFeedback>
+                  <Input type="number" name="xMin" id="xMin" value={values.xMin} onChange={changeHandler} invalid={invalid.xMin}/>
+                  <FormFeedback>{errors.xMin}</FormFeedback>
                 </Col>
               </FormGroup>
             </Col>
             <Col xs={3}>
               <FormGroup row>
-              <Label for="vMax" xs={6}>
-                <abbr title="Velocidade Maxima [m/s]">V<sub>max</sub> [m/s]</abbr>
+              <Label for="xMax" xs={6}>
+                <abbr title="Valor máximo do eixo X">X<sub>max</sub></abbr>
               </Label>
               <Col xs={6}>
-                <Input type="number" name="vMax" id="vMax" value={values.vMax} onChange={changeHandler} invalid={invalid.vMax} />
-                <FormFeedback>{errors.vMax}</FormFeedback>
+                <Input type="number" name="xMax" id="xMax" value={values.xMax} onChange={changeHandler} invalid={invalid.xMax} />
+                <FormFeedback>{errors.xMax}</FormFeedback>
               </Col>
               </FormGroup>
             </Col>
             <Col xs={3}>
               <FormGroup row>
                 <Label for="deltaV" xs={6}>
-                <abbr title="passo do eixo X [m/s]">&Delta;V [m/s]</abbr>
+                <abbr title="passo do eixo X ">&Delta;X [m/s]</abbr>
                 </Label>
                 <Col xs={6}>
-                  <Input type="number" name="deltaV" id="deltaV" value={values.deltaV} onChange={changeHandler} invalid={invalid.deltaV} />
-                  <FormFeedback>{errors.deltaV}</FormFeedback>
+                  <Input type="number" name="deltaX" id="deltaX" value={values.deltaX} onChange={changeHandler} invalid={invalid.deltaX} />
+                  <FormFeedback>{errors.deltaX}</FormFeedback>
                 </Col>
               </FormGroup>
             </Col>
