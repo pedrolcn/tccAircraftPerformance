@@ -95,6 +95,7 @@ export default class PerformanceView extends React.Component<PerformanceViewProp
         const { configs } = prevState;
         if (type === 'radio') {
           name = 'motorization';
+          (configs[idx].values as any)[name] = value;
         } else {
           configs[idx] = InputsValidationRunner.run(configs[idx], name, value);
         }

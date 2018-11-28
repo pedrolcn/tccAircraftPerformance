@@ -7,7 +7,7 @@ export interface PlotSettings {
   yScale: number;
 }
 
-export type Equation = (config: AircraftConfiguration, airspeed: number[]) => number[];
+export type Equation = (config: AircraftConfiguration, xCoordinate: number[]) => number[];
 
 export default class EquationPlot {
   constructor(
@@ -16,7 +16,7 @@ export default class EquationPlot {
     public readonly settings?: PlotSettings, 
   ) {}
 
-  public calculate(config: AircraftConfiguration, airspeed: number[]): number[] {
-    return this.equation(config, airspeed);
+  public calculate(config: AircraftConfiguration, xCoordinate: number[]): number[] {
+    return this.equation(config, xCoordinate);
   }
 }
